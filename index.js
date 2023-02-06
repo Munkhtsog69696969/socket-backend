@@ -14,12 +14,30 @@ const server=http.createServer(app)
 
 const io=new Server(server,{
     cors:{
-        origin:"http://localhost:40000",
-        methods:["GET","HOST"],
-    }
+        origin:"http://localhost:3001",
+        methods:["GET","POST"],
+    },
 })
 
-server.listen(40000,()=>{
+io.on("connection" , (socket)=>{
+    // console.log("User Id:",socket.id);
+
+    socket.on("join_room",(data)=>{
+        // console.log(data)
+
+        socket.join(data.room)
+    })
+
+    socket.on("send_message",(data)=>{
+        // console.log(data)
+
+        socket.to(data.room).emit("receive_message",data.message);  
+    })
+})
+
+server.listen(4000,()=>{    
     console.log("Server is running")
 })
+
+
 
