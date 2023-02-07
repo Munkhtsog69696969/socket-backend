@@ -10,7 +10,9 @@ const cors=require("cors")
 
 app.use(cors());
 
-const server=http.createServer(app)
+const server=http.createServer(app);
+
+let texts=[];
 
 const io=new Server(server,{
     cors:{
@@ -23,21 +25,22 @@ io.on("connection" , (socket)=>{
     // console.log("User Id:",socket.id);
 
     socket.on("join_room",(data)=>{
-        // console.log(data)
+        console.log(data)
 
         socket.join(data.room)
     })
 
     socket.on("send_message",(data)=>{
-        // console.log(data)
+        console.log(data)
 
-        socket.to(data.room).emit("receive_message",data.message);  
+        texts.push(data.message)
+
+        socket.to(data.room).emit("receive_message",texts);  
     })
 })
 
 server.listen(4000,()=>{    
     console.log("Server is running")
 })
-
 
 
